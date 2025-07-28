@@ -19,5 +19,6 @@ type,action
 | Runs a command | Presses a keybind |
 |cmd,/usr/bin/firefox |key,control+v|
 
+
 for CMD, parameters will not function correctly. If a program requires parameters, create a shell script and execute it with a CMD action.
 
