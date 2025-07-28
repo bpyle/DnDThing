@@ -1,0 +1,258 @@
+import { DeskThing } from "@deskthing/server";
+import { AppSettings, DESKTHING_EVENTS, SETTING_TYPES } from "@deskthing/types";
+import { spawn } from 'child_process';
+import keySender from "node-key-sender"
+const start = async () => {
+  console.log('Server Started!')
+  // TODO: Implement settings groups once DeskThing receives functionality
+  const settings: AppSettings = {
+    color: {
+      label: 'App Color',
+      id: 'color',
+      type: SETTING_TYPES.COLOR,
+      value: '#000000'
+    },
+    buttonColor: {
+      label: 'Button Color',
+      id: 'btnColor',
+      type: SETTING_TYPES.COLOR,
+      value: '#A7A6BA'
+    },
+    icon1: {
+      label: "Module 1 Icon",
+      id: "icon1",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action1: {
+      label: 'Module 1 Action',
+      id: "act1",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon2: {
+      label: "Module 2 Icon",
+      id: "icon2",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action2: {
+      label: 'Module 2 Action',
+      id: "act2",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon3: {
+      label: "Module 3 Icon",
+      id: "icon3",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action3: {
+      label: 'Module 3 Action',
+      id: "act3",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon4: {
+      label: "Module 4 Icon",
+      id: "icon4",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action4: {
+      label: 'Module 4 Action',
+      id: "act4",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon5: {
+      label: "Module 5 Icon",
+      id: "icon5",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action5: {
+      label: 'Module 5 Action',
+      id: "act5",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon6: {
+      label: "Module 6 Icon",
+      id: "icon6",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action6: {
+      label: 'Module 6 Action',
+      id: "act6",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon7: {
+      label: "Module 7 Icon",
+      id: "icon7",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action7: {
+      label: 'Module 7 Action',
+      id: "act7",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon8: {
+      label: "Module 8 Icon",
+      id: "icon8",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action8: {
+      label: 'Module 8 Action',
+      id: "act8",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon9: {
+      label: "Module 9 Icon",
+      id: "icon9",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action9: {
+      label: 'Module 9 Action',
+      id: "act9",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon10: {
+      label: "Module 10 Icon",
+      id: "icon10",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action10: {
+      label: 'Module 10 Action',
+      id: "act10",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon11: {
+      label: "Module 11 Icon",
+      id: "icon11",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action11: {
+      label: 'Module 11 Action',
+      id: "act11",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon12: {
+      label: "Module 12 Icon",
+      id: "icon12",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action12: {
+      label: 'Module 12 Action',
+      id: "act12",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon13: {
+      label: "Module 13 Icon",
+      id: "icon13",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action13: {
+      label: 'Module 13 Action',
+      id: "act13",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon14: {
+      label: "Module 14 Icon",
+      id: "icon14",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action14: {
+      label: 'Module 14 Action',
+      id: "act14",
+      type: SETTING_TYPES.STRING,
+      value:''
+    },
+    icon15: {
+      label: "Module 15 Icon",
+      id: "icon15",
+      type: SETTING_TYPES.STRING,
+      value: ''
+    },
+    action15: {
+      label: 'Module 15 Action',
+      id: "act15",
+      type: SETTING_TYPES.STRING,
+      value:''
+    }
+
+
+    
+  }
+
+  DeskThing.initSettings(settings)
+};
+
+const stop = async () => {
+  // Function called when the server is stopped
+  console.log('Server Stopped');
+};
+
+// Main Entrypoint of the server
+DeskThing.on(DESKTHING_EVENTS.START, start);
+
+// Main exit point of the server
+DeskThing.on(DESKTHING_EVENTS.STOP, stop);
+
+// Listener for requested commands
+DeskThing.on('action', (data) => {
+    console.log(data.payload) // the requested desktop action
+    const instruction = "" + data.payload
+    const index = instruction.indexOf(',');
+    const type = instruction.slice(0,index)
+    const command = instruction.slice(index+1)
+    switch (type) {
+      case "cmd": {
+        spawn(command, [], { detached: true, stdio: 'ignore', env: {
+          ...process.env,
+          WAYLAND_DISPLAY: 'wayland-0',
+          XDG_RUNTIME_DIR: '/run/user/1000',
+        }
+        }).unref();
+        
+        break;
+      }
+        
+      case "key": {
+        const chain = command.split("+")
+        keySender.sendCombination(chain)
+        .then(() => {
+          console.log(chain + " sent successfully");
+        })
+        .catch((err) => {
+          console.error('Error sending key combination:', err);
+        });
+        break;
+      }
+        
+      default:
+        console.log("Unhandled type");
+        break;
+
+
+    }
+})
+
