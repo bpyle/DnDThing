@@ -1,7 +1,6 @@
 import { DeskThing } from "@deskthing/server";
 import { AppSettings, DESKTHING_EVENTS, SETTING_TYPES } from "@deskthing/types";
 import { spawn } from 'child_process';
-import keySender from "node-key-sender"
 const start = async () => {
   console.log('Server Started!')
   // TODO: Implement settings groups once DeskThing receives functionality
@@ -238,13 +237,7 @@ DeskThing.on('action', (data) => {
         
       case "key": {
         const chain = command.split("+")
-        keySender.sendCombination(chain)
-        .then(() => {
-          console.log(chain + " sent successfully");
-        })
-        .catch((err) => {
-          console.error('Error sending key combination:', err);
-        });
+        console.log("TODO: Find good global implementation for keystrokes")
         break;
       }
         

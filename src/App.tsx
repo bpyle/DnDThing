@@ -87,7 +87,7 @@ const App: React.FC = () => {
         {buttons.map((num) => (
           <button key={num} className="box" style={{ backgroundColor: iconColor as string ?? "#A7A6BA"}} onClick={() => requestAction(num)}>
             {icons[num-1] ? (<img
-              src={ DeskThing.useProxy(icons[num - 1]) ?? "/icons/default.png"}
+              src={ DeskThing.useProxy(icons[num - 1])}
               
               className="w-full h-full object-cover box"
             />) : (<div></div>)}
