@@ -224,25 +224,161 @@ DeskThing.on('action', (data) => {
     const type = instruction.slice(0,index)
     const command = instruction.slice(index+1)
     switch (type) {
-      case "cmd": {
-        spawn(command, [], { detached: true, stdio: 'ignore', env: {
-          ...process.env,
-          WAYLAND_DISPLAY: 'wayland-0',
-          XDG_RUNTIME_DIR: '/run/user/1000',
-        }
-        }).unref();
+		case "cmd": {
+			spawn(command, [], { detached: true, stdio: 'ignore', env: {
+			  ...process.env,
+			  WAYLAND_DISPLAY: 'wayland-0',
+			  XDG_RUNTIME_DIR: '/run/user/1000',
+			}
+			}).unref();
+
+			break;
+		}
+		case "key": {
+			const chain = command.split("+")
+			console.log("TODO: Find good global implementation for keystrokes")
+			break;
+		}
+		case "fugitech": {
+			console.log("ALERT Fugitech");
+			const fugiIP = "127.0.0.1";
+			const fugiPort = 3333;
+			const fugiCmdArray = command.toLowerCase();
+
+			try {
+				
+
+				//Args:
+				//0: audioSource
+				// (sometimes) Playback
+				//1: Command
+				//2: dataKey
+				//3: dataVal
+					fetch(fugiCmdArray, {
+						method: 'GET'
+					});
+				
+				} catch (error){
+				console.log(error);
+			}
+			break;
+		}
+		case "kenkuFM": {		
+		
+			const kenkuIP = "127.0.0.1";
+			const kenkuPort = 3333;
+			const kenkuCmdArray = (command.toLowerCase()).split(" ");
+			
+			try {
+				
+				console.log("First two kenkuArgs = " + kenkuCmdArray[0] + kenkuCmdArray[1]);
+				if(kenkuCmdArray.length < 2 || kenkuCmdArray.length > 5){
+					throw "Wrong number of arguments";
+				}
+				//Args:
+				//0: audioSource
+				// (sometimes) Playback
+				//1: Command
+				//2: dataKey
+				//3: dataVal
+				
+				const audioSource = kenkuCmdArray[0];
+				console.log("audioSource =" + audioSource);
+				var httpString = "http://" + kenkuIP + ":" + kenkuPort + "/v1/" + audioSource;
+				console.log("httpString =" + httpString);
+				
+				var commandType = kenkuCmdArray[1];
+				console.log("commandType =" + commandType);
+				if(commandType == "playback"){
+					httpString = httpString + "/" + commandType + "/";
+					commandType = kenkuCmdArray[2];
+				}
+				
+				
+				var methodString = "PUT";
+				
+
+				if(commandType == "state" || commandType == "get"){
+						methodString = "GET";
+						fetch(httpString);
+						
+					console.log("KENKU GET");
+				}
+				else{
+					if(commandType == "next" || commandType == "previous"){
+						methodString = "POST";	
+					}
+					
+					if(kenkuCmdArray.length < 4){
+						fetch(httpString + commandType, {
+						  method: methodString
+						});
+					}
+					else{
+						
+						console.log("KENKU ELSE");
+						let dataKey = (kenkuCmdArray[kenkuCmdArray.length-2]).toLowerCase();
+						//const dataKey = 'id';
+						const dataValue = kenkuCmdArray[kenkuCmdArray.length-1];
+						
+						const tester = {
+							dataKey: dataValue,
+						};
+						
+						httpString = httpString + "/" + commandType;
+										
+						var stringifiedData = "";	
+						
+						switch(dataKey){
+							case "id":{
+								stringifiedData = JSON.stringify({
+									id: dataValue
+								  });
+							break;
+							}
+							case "mute":{
+								stringifiedData = JSON.stringify({
+									mute: dataValue
+								  });
+							break;
+							}
+							case "volume":{
+								stringifiedData = JSON.stringify({
+									volume: dataValue
+								  });
+							break;
+							}
+							case "shuffle":{
+								stringifiedData = JSON.stringify({
+									shuffle: dataValue
+								  });
+							break;
+							}
+							case "repeat":{
+								stringifiedData = JSON.stringify({
+									repeat: dataValue
+								  });
+							break;
+							}
+						}
+						console.log("stringified =" + stringifiedData);
+						fetch(httpString, {
+						  method: methodString,
+						  headers: {
+							"Content-Type": "application/json"
+						  },
+						  body: stringifiedData
+						});
+					}
+				}
+			} catch (error){
+				console.log(error);
+			}
+			break;
+		}
         
-        break;
-      }
-        
-      case "key": {
-        const chain = command.split("+")
-        console.log("TODO: Find good global implementation for keystrokes")
-        break;
-      }
-        
-      default:
-        console.log("Unhandled type");
+		default:
+			console.log("Unhandled type");
         break;
 
 
